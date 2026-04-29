@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import br.com.iuri.compose.navigation.core.routes.onboarding.OnboardingRoute
-import br.com.iuri.compose.navigation.runtime.NavRegistry
+import br.com.iuri.compose.navigation.core.NavRegistry
 import org.koin.compose.koinInject
 
 /**

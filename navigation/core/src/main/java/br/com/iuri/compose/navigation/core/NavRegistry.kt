@@ -1,7 +1,7 @@
-package br.com.iuri.compose.navigation.runtime
+package br.com.iuri.compose.navigation.core
 
 import androidx.navigation.NavGraphBuilder
-import br.com.iuri.compose.navigation.runtime.graph.FeatureNavGraph
+import br.com.iuri.compose.navigation.core.graph.FeatureNavGraph
 
 /**
  * A registry for coordinating and assembling multiple feature-specific navigation graphs.
@@ -20,13 +20,13 @@ class NavRegistry(
     private val _graphs: List<FeatureNavGraph> = emptyList()
 ) {
     /**
-     * Registers all contained feature graphs into the provided [NavGraphBuilder].
+     * Registers all contained feature graphs into the provided [androidx.navigation.NavGraphBuilder].
      *
      * This method iterates over the internal collection of graphs and invokes their
      * [br.com.iuri.compose.navigation.core.graph.FeatureNavGraph.register] method, effectively injecting all feature-defined
      * routes into the application's navigation hierarchy.
      *
-     * @param builder The [NavGraphBuilder] used to assemble the navigation graph.
+     * @param builder The [androidx.navigation.NavGraphBuilder] used to assemble the navigation graph.
      */
     fun registerGraphs(builder: NavGraphBuilder) {
         _graphs.forEach { it.register(builder) }

@@ -1,69 +1,63 @@
 # Navigation Architecture with NavManager
 
-This project demonstrates a cleaner, decoupled, and scalable navigation approach in
-Android applications using Jetpack Compose, with navigation being controlled by a ViewModel
-through a centralized NavManager.
+A clean, decoupled, and highly scalable navigation framework for Android applications built with *
+*Jetpack Compose**, **Koin**, and **Kotlin Serialization**.
 
-## Motivation
+## 🚀 Overview
 
-Default navigation using NavController can become hard to maintain when:
+This architecture moves navigation logic out of the UI layer and into the business logic (
+ViewModels). By using a centralized `NavManager`, features remain completely isolated, routes are
+type-safe, and navigation events are lifecycle-aware.
 
-- Navigation logic is spread across multiple screens
-- Composables become tightly coupled to routes
-- Testability is reduced
-- Flow control (e.g., login → home) is handled inside the UI
+## 🏗️ Modular Architecture
 
-This project solves these issues by centralizing navigation into a single source of truth.
+The system is split into two sub-modules to enforce strict encapsulation and optimize build times:
 
-## Core Idea
+### 1. `:navigation:core` (The Contract)
 
-Navigation is not triggered directly by the UI.
+The "thin" layer that all feature modules depend on. It contains no Android UI dependencies.
 
-Instead:
+- **`NavManager`**: Interface used by ViewModels to dispatch navigation intents.
+- **`NavAction`**: A rich sealed class defining *what* the navigation should do (e.g., `NavigateTo`,
+  `ReplaceGraph`, `SwitchTab`).
+- **`NavFlow<T>`**: A specialized, read-only `SharedFlow` wrapper for navigation streams.
+- **`FeatureNavGraph`**: The contract for feature modules to register their own routes.
+- **`Routes`**: Type-safe `@Serializable` objects defining destinations.
 
-- The UI sends intents
-- The ViewModel decides what to do
-- The NavManager emits navigation commands
-- The NavHost listens and executes
+### 2. `:navigation:runtime` (The Engine)
 
-## 🏗️ Components
+The implementation layer. Only the `:app` module (and the navigation host) needs to know about this.
 
-### NavManager
-Responsible for emitting navigation actions.
+- **`NavManagerImpl`**: The concrete implementation managing the `MutableNavFlow`.
+- **`BindNavManager`**: A lifecycle-aware extension that connects the `NavController` to the
+  `NavManager`.
+- **`NavRegistry`**: A central collector that assembles all `FeatureNavGraph` instances into the
+  `NavHost`.
+- **`AppNav` & `AppHost`**: The top-level Composables that initialize the navigation container.
 
-```kotlin
-sealed class NavAction {
-    data class NavigateTo(val screen: NavScreen) : NavAction()
-    object NavigateUp : NavAction()
-}
+## 🛠️ Key Components
 
-class NavManager {
-    private val _command = MutableSharedFlow<NavAction>()
-    val command = _command.asSharedFlow()
+### Declarative Navigation Intents (`NavAction`)
 
-    suspend fun navigate(action: NavAction) {
-        _command.emit(action)
-    }
-}
-```
-### NavHost
-Observes navigation events and performs navigation.
+Instead of managing `NavOptions` in ViewModels, we use declarative actions:
 
-```kotlin
-LaunchedEffect(Unit) {
-    navManager.command.collect { action ->
-        when (action) {
-            is NavAction.NavigateTo -> {
-                navController.navigate(action.screen.route)
-            }
-            is NavAction.NavigateUp -> {
-                navController.popBackStack()
-            }
-        }
-    }
-}
-```
+- **`NavigateTo`**: Standard navigation with `singleTop` support.
+- **`ReplaceGraph`**: Clears the entire backstack (e.g., Login ➔ Home).
+- **`SwitchTab`**: Optimized for Bottom Navigation with state preservation.
+- **`PopTo`**: Targeted backstack removal.
 
-## Conclusion
-Using a ViewModel-driven navigation with a centralized NavManager improves organization, 
-testability, and scalability, making it a solid choice for modern Android applications.
+### Specialized Flow (`NavFlow`)
+
+We utilize a custom `NavFlow` (built on `SharedFlow`) with a default buffer of 1. This ensures that:
+
+1. Navigation commands are never lost if emitted while the UI is busy.
+2. Commands are delivered exactly once (Event-based, not State-based).
+3. The UI layer cannot accidentally emit events.
+
+## 💻 How to Use
+
+### 1. Define Feature Routes
+
+### 2. Trigger from ViewModel
+
+### 3. Bind in the UI

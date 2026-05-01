@@ -2,7 +2,6 @@ package br.com.iuri.compose.navigation.core.routes.onboarding
 
 import kotlinx.serialization.Serializable
 
-@Serializable
 sealed class OnboardingRoute {
     @Serializable
     data object Welcome : OnboardingRoute()

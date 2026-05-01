@@ -1,11 +1,15 @@
 package br.com.iuri.compose.navigation.core
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import br.com.iuri.compose.navigation.core.routes.onboarding.OnboardingRoute
-import br.com.iuri.compose.navigation.core.NavRegistry
 import org.koin.compose.koinInject
 
 /**
@@ -25,14 +29,46 @@ import org.koin.compose.koinInject
  */
 @Composable
 internal fun AppHost(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     navController: NavHostController,
     registry: NavRegistry = koinInject()
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = OnboardingRoute.Welcome
+        startDestination = OnboardingRoute.Welcome,
+        enterTransition = {
+            fadeIn(animationSpec = tween(250, easing = FastOutSlowInEasing)) +
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                        animationSpec = tween(250, easing = FastOutSlowInEasing),
+                        initialOffset = { it / 10 }
+                    )
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(200)) +
+                    slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                        animationSpec = tween(250, easing = FastOutSlowInEasing),
+                        targetOffset = { it / 10 }
+                    )
+        },
+        popEnterTransition = {
+            fadeIn(animationSpec = tween(250, easing = FastOutSlowInEasing)) +
+                    slideIntoContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.End,
+                        animationSpec = tween(250, easing = FastOutSlowInEasing),
+                        initialOffset = { it / 10 }
+                    )
+        },
+        popExitTransition = {
+            fadeOut(animationSpec = tween(200)) +
+                    slideOutOfContainer(
+                        towards = AnimatedContentTransitionScope.SlideDirection.End,
+                        animationSpec = tween(250, easing = FastOutSlowInEasing),
+                        targetOffset = { it / 10 }
+                    )
+        }
     ) {
         registry.registerGraphs(this)
     }

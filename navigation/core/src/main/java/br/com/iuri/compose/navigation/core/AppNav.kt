@@ -25,7 +25,7 @@ import org.koin.compose.koinInject
 @Composable
 fun AppNav(
     modifier: Modifier = Modifier,
-    manager: NavManager = koinInject(),
+    manager: NavManager = koinInject()
 ) {
     val navController = rememberNavController()
 

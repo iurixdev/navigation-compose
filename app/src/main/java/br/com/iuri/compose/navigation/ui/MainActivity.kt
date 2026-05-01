@@ -1,10 +1,10 @@
-package br.com.iuri.compose.navigation
+package br.com.iuri.compose.navigation.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import br.com.iuri.compose.navigation.core.composable.AppNav
+import br.com.iuri.compose.navigation.core.AppNav
 import br.com.iuri.compose.navigation.ui.theme.NavigationTheme
 
 class MainActivity : ComponentActivity() {

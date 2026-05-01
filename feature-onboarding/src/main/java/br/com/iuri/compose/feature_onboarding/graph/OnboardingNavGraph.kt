@@ -2,25 +2,23 @@ package br.com.iuri.compose.feature_onboarding.graph
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
+import br.com.iuri.compose.feature_onboarding.screen.SampleFeaturesScreen
+import br.com.iuri.compose.feature_onboarding.screen.SampleFinishScreen
+import br.com.iuri.compose.feature_onboarding.screen.SampleWelcomeScreen
 import br.com.iuri.compose.navigation.core.graph.FeatureNavGraph
 import br.com.iuri.compose.navigation.core.routes.onboarding.OnboardingRoute
 
-class OnboardingNavGraph : FeatureNavGraph {
+internal class OnboardingNavGraph : FeatureNavGraph {
 
     override fun register(builder: NavGraphBuilder) = builder.run {
-        navigation<OnboardingRoute>(
-            startDestination = OnboardingRoute.Welcome
-        ) {
-            composable<OnboardingRoute.Welcome> {
-
-            }
-            composable<OnboardingRoute.Features> {
-
-            }
-            composable<OnboardingRoute.Finish> {
-
-            }
+        composable<OnboardingRoute.Welcome> {
+            SampleWelcomeScreen()
+        }
+        composable<OnboardingRoute.Features> {
+            SampleFeaturesScreen()
+        }
+        composable<OnboardingRoute.Finish> {
+            SampleFinishScreen()
         }
     }
 }
